@@ -1,0 +1,7 @@
+torch>=1.11.0
+gym>=0.24.0
+gym[classic_control]
+gym[atari]
+gym[accept-rom-license]
+ale-py>=0.7.5
+pygame>=2.1.2
