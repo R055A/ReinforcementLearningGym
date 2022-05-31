@@ -2,6 +2,9 @@
 
 Train and evaluate reinforcement learning agents in [OpenAI Gym environments](https://www.gymlibrary.ml/) using Deep Q-learning (DQN).
 
+![Pong-v5 graph](img/pong-v5_graph_darkmode.png#gh-dark-mode-only)
+![Pong-v5 graph](img/pong-v5_graph_lightmode.png#gh-light-mode-only)
+
 ## Environments
 
 The following environments are implemented for training and evaluating:
