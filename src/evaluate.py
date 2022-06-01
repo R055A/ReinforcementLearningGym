@@ -1,7 +1,10 @@
 from action_obs import ClassicControlActionObservation, AtariActionObservation
-from config import is_classic_control, get_hyperparameters
-from gym.wrappers import AtariPreprocessing
-from parser import ParseArguments
+from gym.wrappers import AtariPreprocessing, RecordVideo
+from config import MODEL_PATH, VIDEO_PATH, \
+    is_classic_control, get_hyperparameters
+from parser import ParseEvaluateArguments
+from os.path import exists
+from os import makedirs
 from torch import load
 from gym import make
 
@@ -13,7 +16,9 @@ class EvaluatePolicy:
                  gym_env,
                  num_episodes,
                  device_type,
+                 env_name,
                  is_render_env=False,
+                 is_record_env=False,
                  is_verbose_returns=False):
         """
         Initiate evaluate agent superclass instance
@@ -22,7 +27,9 @@ class EvaluatePolicy:
         self.gym_env = gym_env
         self.num_episodes = num_episodes
         self.device = device_type
+        self.env_name = env_name
         self.is_render_env = is_render_env
+        self.is_record_env = is_record_env
         self.is_verbose_returns = is_verbose_returns
 
         # initialize in subclass
@@ -36,6 +43,12 @@ class EvaluatePolicy:
         """
         self.dqn_model = dqn_model if dqn_model else self.dqn_model
         self.gym_env = gym_env if gym_env else self.gym_env
+
+        if self.is_record_env:
+            self.gym_env = \
+                RecordVideo(env=self.gym_env,
+                            video_folder=f'{ VIDEO_PATH }',
+                            name_prefix=f'{ self.env_name.strip("ALE/") }')
         total_episodes_return = 0
 
         for i in range(self.num_episodes):
@@ -67,7 +80,9 @@ class EvaluateClassicControlPolicy(EvaluatePolicy):
                  gym_env,
                  num_episodes,
                  device_type,
+                 env_name,
                  is_render_env=False,
+                 is_record_env=False,
                  is_verbose_returns=False):
         """
         Initiate evaluate agent subclass instance
@@ -77,7 +92,9 @@ class EvaluateClassicControlPolicy(EvaluatePolicy):
                          gym_env,
                          num_episodes,
                          device_type,
+                         env_name,
                          is_render_env,
+                         is_record_env,
                          is_verbose_returns)
 
         # initialize action-observation interaction with the environment
@@ -93,6 +110,7 @@ class EvaluateAtariPolicy(EvaluatePolicy):
                  device_type,
                  env_name,
                  is_render_env=False,
+                 is_record_env=False,
                  is_verbose_returns=False):
         """
         Initiate evaluate agent subclass instance for Atari game environments
@@ -101,9 +119,11 @@ class EvaluateAtariPolicy(EvaluatePolicy):
                          gym_env,
                          num_episodes,
                          device_type,
+                         env_name,
                          is_render_env,
+                         is_record_env,
                          is_verbose_returns)
-        env_config = get_hyperparameters(env_name)
+        env_config = get_hyperparameters(self.env_name)
         screen_size = env_config['screen_size']
         is_grayscale_obs = env_config['is_grayscale_obs']
         frame_skip = env_config['frame_skip']
@@ -127,10 +147,11 @@ class EvaluateAtariPolicy(EvaluatePolicy):
 
 
 def evaluate_trained_model():
-    args = ParseArguments().get_args()
+    args = ParseEvaluateArguments().get_args()
     device = 'cpu'
-    model = load(f=f'models/{ args.env }.pt',
+    model = load(f=f'{ MODEL_PATH }/{ args.env }.pt',
                  map_location=device)
+    makedirs(VIDEO_PATH) if args.is_record and not exists(VIDEO_PATH) else None
 
     model.eval()
     if is_classic_control(args.env):
@@ -140,16 +161,22 @@ def evaluate_trained_model():
                                          gym_env=env,
                                          num_episodes=args.num_eval_episodes,
                                          device_type=device,
-                                         is_render_env=True,
+                                         env_name=args.env,
+                                         is_render_env=args.is_render,
+                                         is_record_env=args.is_record,
                                          is_verbose_returns=True)
     else:
-        env = make(id=args.env,
-                   render_mode='human')
+        if args.is_render:
+            env = make(id=args.env,
+                       render_mode='human')
+        else:
+            env = make(id=args.env)
         eval_policy = EvaluateAtariPolicy(dqn_model=model,
                                           gym_env=env,
                                           num_episodes=args.num_eval_episodes,
                                           device_type=device,
                                           env_name=args.env,
+                                          is_record_env=args.is_record,
                                           is_verbose_returns=True)
     mean_episodes_return = eval_policy.run()
     print(f'Total Episodes { args.num_eval_episodes } | '

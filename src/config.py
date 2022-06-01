@@ -1,3 +1,6 @@
+MODEL_PATH = 'models'
+VIDEO_PATH = 'videos'
+
 CartPole = {
     'memory_size': 65000,
     'num_episodes': 2000,
@@ -18,7 +21,7 @@ Acrobot = {
     'num_episodes': 2000,
     'target_update_freq': 100,
     'train_freq': 1,
-    'learning_rate': 0.00005,
+    'learning_rate': 0.0001,
     'batch_size': 32,
     'gamma': 0.95,
     'eps_start': 1.0,

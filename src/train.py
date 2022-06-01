@@ -1,12 +1,14 @@
 from action_obs import ClassicControlActionObservation, AtariActionObservation
 from torch import device, cuda, tensor, optim, float, save, bool, cat, zeros
 from evaluate import EvaluateClassicControlPolicy, EvaluateAtariPolicy
-from config import get_hyperparameters, is_classic_control
+from config import MODEL_PATH, get_hyperparameters, is_classic_control
 from gym.wrappers import AtariPreprocessing
+from dqn import ClassicControlDQN, AtariDQN
 from torch.nn.functional import mse_loss
 from parser import ParseTrainArguments
-from dqn import ClassicControlDQN, AtariDQN
 from replay import ReplayMemory
+from os.path import exists
+from os import makedirs
 from gym import make
 from math import inf
 
@@ -17,7 +19,7 @@ class TrainAgentUsingDQN:
         """
         Initiate train agent superclass instance
         """
-        cuda.empty_cache()
+        cuda.empty_cache() if cuda.is_available() else None
         self.device = device('cuda' if cuda.is_available() else 'cpu')
 
         # initialize environment
@@ -91,7 +93,7 @@ class TrainAgentUsingDQN:
                 if avg_return >= best_avg_return:
                     best_avg_return = avg_return
                     print('New best score!')
-                    save(self.dqn, f'models/{ self.env_name }.pt')
+                    save(self.dqn, f'{ MODEL_PATH }/{ self.env_name }.pt')
 
         # close environment
         self.gym_env.close()
@@ -162,7 +164,8 @@ class TrainClassicControlAgent(TrainAgentUsingDQN):
             EvaluateClassicControlPolicy(dqn_model=self.dqn,
                                          gym_env=self.gym_env,
                                          num_episodes=self.eval_episodes,
-                                         device_type=self.device)
+                                         device_type=self.device,
+                                         env_name=self.env_name)
 
         # initialize action-observation interaction with the environment
         self.action_obs = ClassicControlActionObservation(device=self.device)
@@ -219,11 +222,13 @@ class TrainAtariAgent(TrainAgentUsingDQN):
 
 
 def train_model():
-    input_args = ParseTrainArguments().get_args()
-    if is_classic_control(input_args.env):
-        train_agent = TrainClassicControlAgent(input_args)
+    args = ParseTrainArguments().get_args()
+    makedirs(MODEL_PATH) if not exists(MODEL_PATH) else None
+
+    if is_classic_control(args.env):
+        train_agent = TrainClassicControlAgent(args)
     else:
-        train_agent = TrainAtariAgent(input_args)
+        train_agent = TrainAtariAgent(args)
     train_agent.learn()
 
 

@@ -60,6 +60,8 @@ pip install -r requirements.txt
 
 ## CartPole
 
+[![CartPole-v1 video](img/CartPole-v1_thumbnail.png)](https://youtu.be/XoRg8VKQlk4)
+
 ### CartPole-v0
 
 #### Train
@@ -71,7 +73,7 @@ python src/train.py --env CartPole-v0 --eval_freq <int> --num_eval_episodes <int
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env CartPole-v0 --num_eval_episodes <int>
+python src/evaluate.py --env CartPole-v0 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ### CartPole-v1
@@ -85,10 +87,12 @@ python src/train.py --env CartPole-v1 --eval_freq <int> --num_eval_episodes <int
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env CartPole-v1 --num_eval_episodes <int>
+python src/evaluate.py --env CartPole-v1 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ## Acrobot
+
+[![Acrobot-v1 video](img/Acrobot-v1_thumbnail.png)](https://youtube.com/shorts/aRY78lB6cfQ?feature=share)
 
 ### Acrobot-v1
 
@@ -101,7 +105,7 @@ python src/train.py --env Acrobot-v1 --eval_freq <int> --num_eval_episodes <int>
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env Acrobot-v1 --num_eval_episodes <int>
+python src/evaluate.py --env Acrobot-v1 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ## MountainCar
@@ -117,10 +121,12 @@ python src/train.py --env MountainCar-v0 --eval_freq <int> --num_eval_episodes <
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env MountainCar-v0 --num_eval_episodes <int>
+python src/evaluate.py --env MountainCar-v0 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ## Pong
+
+[![Pong-v5 video](img/Pong-v5_thumbnail.png)](https://youtu.be/fve0Uf91ruo)
 
 ### Pong-v0
 
@@ -133,7 +139,7 @@ python src/train.py --env Pong-v0 --eval_freq <int> --num_eval_episodes <int>
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env Pong-v0 --num_eval_episodes <int>
+python src/evaluate.py --env Pong-v0 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ### Pong-v4
@@ -147,7 +153,7 @@ python src/train.py --env Pong-v4 --eval_freq <int> --num_eval_episodes <int>
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env Pong-v4 --num_eval_episodes <int>
+python src/evaluate.py --env Pong-v4 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ### Pong-v5
@@ -161,7 +167,7 @@ python src/train.py --env ALE/Pong-v5 --eval_freq <int> --num_eval_episodes <int
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env ALE/Pong-v5 --num_eval_episodes <int>
+python src/evaluate.py --env ALE/Pong-v5 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ## Breakout
@@ -177,7 +183,7 @@ python src/train.py --env Breakout-v0 --eval_freq <int> --num_eval_episodes <int
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env Breakout-v0 --num_eval_episodes <int>
+python src/evaluate.py --env Breakout-v0 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ### Breakout-v4
@@ -191,7 +197,7 @@ python src/train.py --env Breakout-v4 --eval_freq <int> --num_eval_episodes <int
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env Breakout-v4 --num_eval_episodes <int>
+python src/evaluate.py --env Breakout-v4 --num_eval_episodes <int> --is_render --is_record
 ```
 
 ### Breakout-v5
@@ -205,5 +211,5 @@ python src/train.py --env ALE/Breakout-v5 --eval_freq <int> --num_eval_episodes 
 #### Evaluate
 
 ```shell
-python src/evaluate.py --env ALE/Breakout-v5 --num_eval_episodes <int>
+python src/evaluate.py --env ALE/Breakout-v5 --num_eval_episodes <int> --is_render --is_record
 ```
